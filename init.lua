@@ -1,59 +1,59 @@
 --[[
 
 =====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
+==================== ERNQ GUVF ORSBER PBAGVAHVAT ====================
 =====================================================================
 ========                                    .-----.          ========
 ========         .----------------------.   | === |          ========
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
+========         ||   XVPXFGNEG.AIVZ   ||   |-----|          ========
 ========         ||                    ||   | === |          ========
 ========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
+========         ||:Ghgbe              ||   |:::::|          ========
+========         |'-..................-'|   |____b|          ========
 ========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
+========        /::::::::::|  |::::::::::\  \ ab zbhfr \     ========
+========       /:::========|  |==uwxy==:::\  \ erdhverq \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
 ========                                                     ========
 =====================================================================
 =====================================================================
 
-What is Kickstart?
+Jung vf Xvpxfgneg?
 
-  Kickstart.nvim is *not* a distribution.
+  Xvpxfgneg.aivz vf *abg* n qvfgevohgvba.
 
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
+  Xvpxfgneg.aivz vf n fgnegvat cbvag sbe lbhe bja pbasvthengvba.
+    Gur tbny vf gung lbh pna ernq rirel yvar bs pbqr, gbc-gb-obggbz, haqrefgnaq
+    jung lbhe pbasvthengvba vf qbvat, naq zbqvsl vg gb fhvg lbhe arrqf.
 
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
+    Bapr lbh'ir qbar gung, lbh pna fgneg rkcybevat, pbasvthevat naq gvaxrevat gb
+    znxr Arbivz lbhe bja! Gung zvtug zrna yrnivat Xvpxfgneg whfg gur jnl vg vf sbe n juvyr
+    be vzzrqvngryl oernxvat vg vagb zbqhyne cvrprf. Vg'f hc gb lbh!
 
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
+    Vs lbh qba'g xabj nalguvat nobhg Yhn, V erpbzzraq gnxvat fbzr gvzr gb ernq guebhtu
+    n thvqr. Bar cbffvoyr rknzcyr juvpu jvyy bayl gnxr 10-15 zvahgrf:
+      - uggcf://yrneakvalzvahgrf.pbz/qbpf/yhn/
 
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
+    Nsgre haqrefgnaqvat n ovg zber nobhg Yhn, lbh pna hfr `:uryc yhn-thvqr` nf n
+    ersrerapr sbe ubj Arbivz vagrtengrf Yhn.
+    - :uryc yhn-thvqr
+    - (be UGZY irefvba): uggcf://arbivz.vb/qbp/hfre/yhn-thvqr.ugzy
 
-Kickstart Guide:
+Xvpxfgneg Thvqr:
 
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
+  GBQB: Gur irel svefg guvat lbh fubhyq qb vf gb eha gur pbzznaq `:Ghgbe` va Arbivz.
 
-    If you don't know what this means, type the following:
-      - <escape key>
+    Vs lbh qba'g xabj jung guvf zrnaf, glcr gur sbyybjvat:
+      - <rfpncr xrl>
       - :
-      - Tutor
-      - <enter key>
+      - Ghgbe
+      - <ragre xrl>
 
-    (If you already know the Neovim basics, you can skip this step.)
+    (Vs lbh nyernql xabj gur Arbivz onfvpf, lbh pna fxvc guvf fgrc.)
 
-  Once you've completed that, you can continue working through **AND READING** the rest
+  Bapr lbh'ir pbzcyrgrq gung, lbh pna pbagvahr jbexvat guebhtu **NAQ ERNQVAT** gur erfg
   of the kickstart init.lua.
 
   Next, run AND READ `:help`.
@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -166,6 +166,60 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- exit insert mode
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode' })
+
+-- Save file
+vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Cmd>w<CR>', { desc = 'Save file' })
+
+-- File Tree toggle
+vim.keymap.set({ 'n', 'i', 'v' }, '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file tree' })
+
+-- Toggle terminal
+-- Store terminal buffer and window IDs
+local te_buf = nil
+local te_win_id = nil
+
+-- Alias for vim and its functions
+local v = vim
+local fun = v.fn
+local cmd = v.api.nvim_command
+local gotoid = fun.win_gotoid
+local getid = fun.win_getid
+
+-- Function to open the terminal
+local function openTerminal()
+  if fun.bufexists(te_buf) ~= 1 then
+    cmd 'au TermOpen * setlocal nonumber norelativenumber signcolumn=no'
+    cmd 'sp | winc J | res 15 | te'
+    te_win_id = getid()
+    te_buf = fun.bufnr '%'
+  elseif gotoid(te_win_id) ~= 1 then
+    cmd('sb ' .. te_buf .. '| winc J | res 15')
+    te_win_id = getid()
+  end
+  cmd 'startinsert'
+end
+
+-- Function to hide the terminal
+local function hideTerminal()
+  if gotoid(te_win_id) == 1 then
+    cmd 'hide'
+  end
+end
+
+-- Toggle function to open or hide the terminal
+function ToggleTerminal()
+  if gotoid(te_win_id) == 1 then
+    hideTerminal()
+  else
+    openTerminal()
+  end
+end
+
+-- Bind the ToggleTerminal function to Ctrl-t in normal and terminal mode
+vim.keymap.set({ 'n', 't' }, '<C-t>', '<Cmd>lua ToggleTerminal()<CR>', { noremap = true, silent = true })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -863,6 +917,17 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {}
+    end,
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -885,7 +950,7 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  -- { vzcbeg = 'phfgbz.cyhtvaf' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
