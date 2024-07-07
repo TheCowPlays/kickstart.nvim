@@ -80,10 +80,8 @@ If you experience any errors while trying to install kickstart, run `:checkhealt
 
 I hope you enjoy your Neovim journey,
 - TJ
-
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -98,6 +96,11 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+-- tab width
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.smarttab = true
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -171,10 +174,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode' })
 
 -- Save file
-vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Cmd>w<CR>', { desc = 'Save file' })
+vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Esc><Cmd>w<CR>', { desc = 'Save file' })
 
 -- File Tree toggle
-vim.keymap.set({ 'n', 'i', 'v' }, '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file tree' })
+vim.keymap.set({ 'n', 'v' }, '<leader>e', '<Cmd>NvimTreeToggle<CR>', { desc = 'Toggle file tree' })
 
 -- Toggle terminal
 -- Store terminal buffer and window IDs
@@ -219,7 +222,10 @@ function ToggleTerminal()
 end
 
 -- Bind the ToggleTerminal function to Ctrl-t in normal and terminal mode
-vim.keymap.set({ 'n', 't' }, '<C-t>', '<Cmd>lua ToggleTerminal()<CR>', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 't' }, '<C-t>', '<Cmd>lua ToggleTerminal()<CR>', { desc = 'Toggle Terminal' })
+
+-- Toggle Copilot chat
+vim.keymap.set('n', '<leader>cc', '<Cmd>CopilotChatToggle<CR>', { desc = 'Toggle Copilot Chat' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -827,26 +833,18 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+  {
+    'projekt0n/github-nvim-theme',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      require('github-theme').setup {
+        -- ...
+      }
 
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd 'colorscheme github_dark_tritanopia'
     end,
   },
-
-  -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -881,6 +879,20 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
+      -- Highligh hex values and notes in comments
+      local hipatterns = require 'mini.hipatterns'
+      hipatterns.setup {
+        highlighters = {
+          -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+          fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+          hack = { pattern = '%f[%w]()HACK()%f[%W]', group = 'MiniHipatternsHack' },
+          todo = { pattern = '%f[%w]()TODO()%f[%W]', group = 'MiniHipatternsTodo' },
+          note = { pattern = '%f[%w]()NOTE()%f[%W]', group = 'MiniHipatternsNote' },
+
+          -- Highlight hex color strings (`#rrggbb`) using that color
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+      }
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -917,6 +929,7 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  -- File tree
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
@@ -928,7 +941,119 @@ require('lazy').setup({
       require('nvim-tree').setup {}
     end,
   },
+  -- Copilot and copilot chat
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    dependencies = {
+      {
+        'zbirenbaum/copilot.lua',
+        cmd = 'Copilot',
+        event = 'InsertEnter',
+        config = function()
+          require('copilot').setup {}
+        end,
+      }, -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
+  },
+  -- messages, cmdline and the popupmenu
+  {
+    {
+      'folke/noice.nvim',
+      event = 'VeryLazy',
+      config = function()
+        require('noice').setup {
+          lsp = {
+            -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+            override = {
+              ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+              ['vim.lsp.util.stylize_markdown'] = true,
+              ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+            },
+          },
+          -- you can enable a preset for easier configuration
+          presets = {
+            bottom_search = true, -- use a classic bottom cmdline for search
+            command_palette = true, -- position the cmdline and popupmenu together
+            long_message_to_split = true, -- long messages will be sent to a split
+            inc_rename = false, -- enables an input dialog for inc-rename.nvim
+            lsp_doc_border = false, -- add a border to hover docs and signature help
+          },
+        }
+      end,
+      opts = {
+        -- add any options here
+      },
+      dependencies = {
+        -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+        'MunifTanjim/nui.nvim',
+        -- OPTIONAL:
+        --   `nvim-notify` is only needed, if you want to use the notification view.
+        --   If not available, we use `mini` as the fallback
+        'rcarriga/nvim-notify',
+      },
+    },
+  },
+  {
+    'rcarriga/nvim-notify',
+    opts = {
+      timeout = 5000,
+      background_colour = '#000000',
+      render = 'wrapped-compact',
+    },
+  },
 
+  -- buffer line
+  {
+    'akinsho/bufferline.nvim',
+    event = 'VeryLazy',
+    keys = {
+      { '<S-Tab>', '<Cmd>BufferLineCycleNext<CR>', desc = 'Next tab' },
+      { '<C-S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', desc = 'Prev tab' },
+    },
+    opts = {
+      options = {
+        mode = 'buffers',
+        show_buffer_close_icons = true,
+        show_close_icon = false,
+      },
+    },
+  },
+  -- filename
+  {
+    'b0o/incline.nvim',
+    dependencies = {},
+    event = 'BufReadPre',
+    priority = 1200,
+    config = function()
+      local helpers = require 'incline.helpers'
+      require('incline').setup {
+        window = {
+          padding = 0,
+          margin = { horizontal = 0 },
+        },
+        render = function(props)
+          local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
+          local ft_icon, ft_color = require('nvim-web-devicons').get_icon_color(filename)
+          local modified = vim.bo[props.buf].modified
+          local buffer = {
+            ft_icon and { ' ', ft_icon, ' ', guibg = ft_color, guifg = helpers.contrast_color(ft_color) } or '',
+            ' ',
+            { filename, gui = modified and 'bold,italic' or 'bold' },
+            ' ',
+            guibg = '#363944',
+          }
+          return buffer
+        end,
+      }
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -937,14 +1062,12 @@ require('lazy').setup({
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
